@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block title %}Recommendations — Fitora{% endblock %}
+
+{% block content %}
+<h1>My recommendations</h1>
+
+<p>
+  <a href="{{ url_for('recommendations.create') }}">
+    Generate a recommendation
+  </a>
+</p>
+
+<ul>
+  {% for recommendation in recommendations %}
+  <li>
+    <a href="{{ url_for(
+      'recommendations.detail',
+      recommendation_id=recommendation.id
+    ) }}">
+      {{ recommendation.title }}
+    </a>
+    — {{ recommendation.score }}/100
+    ({{ recommendation.recommendation_type }})
+  </li>
+  {% else %}
+  <li>No recommendations yet.</li>
+  {% endfor %}
+</ul>
+{% endblock %}

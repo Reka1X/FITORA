@@ -1,0 +1,19 @@
+<nav>
+  <a href="{{ url_for('dashboard.index') }}">Fitora</a>
+
+  {% if session.get('user_id') %}
+    <a href="{{ url_for('clothing.index') }}">Wardrobe</a>
+    <a href="{{ url_for('catalog.index') }}">Catalog</a>
+    <a href="{{ url_for('outfit.index') }}">Outfits</a>
+    <a href="{{ url_for('recommendations.index') }}">Recommendations</a>
+    <a href="{{ url_for('calendar.index') }}">Calendar</a>
+    <a href="{{ url_for('user_profile.profile') }}">Profile</a>
+
+    <form method="post" action="{{ url_for('user_profile.logout') }}">
+      <button>Log out</button>
+    </form>
+  {% else %}
+    <a href="{{ url_for('user_profile.login') }}">Log in</a>
+    <a href="{{ url_for('user_profile.register') }}">Register</a>
+  {% endif %}
+</nav>

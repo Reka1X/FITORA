@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>My outfits</h1>
+<p><a href="{{ url_for('outfit.create') }}">Create an outfit</a></p>
+
+<ul>
+  {% for outfit in outfits %}
+  <li>
+    <a href="{{ url_for('outfit.detail', outfit_id=outfit.id) }}">
+      {{ outfit.name }}
+    </a>
+    — {{ outfit.outfit_type }}
+  </li>
+  {% else %}
+  <li>You haven’t saved any outfits yet.</li>
+  {% endfor %}
+</ul>
+{% endblock %}

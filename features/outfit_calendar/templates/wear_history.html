@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Wear history</h1>
+
+<ul>
+  {% for item in history %}
+  <li>{{ item.worn_date }} — {{ item.outfit_name }} ({{ item.outfit_type }})</li>
+  {% else %}
+  <li>No outfits marked as worn yet.</li>
+  {% endfor %}
+</ul>
+{% endblock %}

@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Catalog</h1>
+
+<p><a href="{{ url_for('catalog.create') }}">Add a category</a></p>
+
+<form method="get">
+  <label>Search
+    <input name="q" value="{{ request.args.get('q', '') }}">
+  </label>
+
+  <label>Entry type
+    <select name="entry_type">
+      <option value="">All</option>
+      <option value="color">Color</option>
+      <option value="category">Category</option>
+    </select>
+  </label>
+
+  <label>Item type
+    <select name="item_type">
+      <option value="">All</option>
+      {% for kind in ['Top', 'Bottom', 'One-piece', 'Shoes'] %}
+      <option value="{{ kind }}">{{ kind }}</option>
+      {% endfor %}
+    </select>
+  </label>
+
+  <button>Filter</button>
+</form>
+
+<table>
+  <thead>
+    <tr><th>Kind</th><th>Name</th><th>Item type</th><th>Owner</th><th>Actions</th></tr>
+  </thead>
+  <tbody>
+    {% for entry in entries %}
+    <tr>
+      <td>{{ entry.entry_type }}</td>
+      <td>{{ entry.label }}</td>
+      <td>{{ entry.item_type or '' }}</td>
+      <td>{{ 'Shared' if entry.user_id is none else 'You' }}</td>
+      <td>
+        {% if entry.user_id == session.get('user_id') %}
+        <a href="{{ url_for('catalog.edit', entry_id=entry.id) }}">Edit</a>
+        <form method="post"
+              action="{{ url_for('catalog.delete', entry_id=entry.id) }}">
+          <button>Delete</button>
+        </form>
+        {% endif %}
+      </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="5">No catalog entries found.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

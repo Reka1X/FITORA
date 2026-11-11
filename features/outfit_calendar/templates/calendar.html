@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Outfit calendar</h1>
+<p><a href="{{ url_for('calendar.create') }}">Schedule an outfit</a></p>
+<p><a href="{{ url_for('calendar.history') }}">View wear history</a></p>
+
+<ul>
+  {% for schedule in schedules %}
+  <li>
+    <a href="{{ url_for('calendar.detail', schedule_id=schedule.id) }}">
+      {{ schedule.planned_date }} — {{ schedule.outfit_name }}
+    </a>
+    ({{ schedule.schedule_type }})
+    <form method="post"
+          action="{{ url_for('calendar.mark_worn', schedule_id=schedule.id) }}">
+      <button>Mark worn</button>
+    </form>
+  </li>
+  {% else %}
+  <li>No outfits scheduled.</li>
+  {% endfor %}
+</ul>
+{% endblock %}

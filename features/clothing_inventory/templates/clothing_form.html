@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% block title %}{{ 'Edit item' if item else 'Add item' }} — Fitora{% endblock %}
+{% block content %}
+<p><a href="{{ url_for('clothing.index') }}">← Back to wardrobe</a></p>
+<div class="page-heading">
+  <div>
+    <h1>{{ 'Edit item' if item else 'Add to your wardrobe' }}</h1>
+    <p>Keep the details simple. Add a photo to recognize it at a glance.</p>
+  </div>
+</div>
+
+<section class="form-panel">
+  {% for message in errors.values() %}
+  <p class="error">{{ message }}</p>
+  {% endfor %}
+
+  {% set values = values or {} %}
+  <div class="photo-preview-wrap">
+    {% if item and item.photo %}
+    <img id="photo-preview" class="form-photo-preview" src="{{ url_for('clothing.photo', filename=item.photo) }}" alt="Current photo of {{ item.name }}">
+    {% else %}
+    <img id="photo-preview" class="form-photo-preview is-empty" alt="Selected clothing photo preview" hidden>
+    <div id="photo-empty" class="photo-placeholder form-photo-empty">Photo preview</div>
+    {% endif %}
+  </div>
+
+  <form method="post" enctype="multipart/form-data">
+    <label>Name
+      <input name="name" value="{{ values.get('name', item.name if item else '') }}" required>
+    </label>
+
+    <label>Type
+      <select name="item_type" id="item_type" required>
+        {% for value in ['Top', 'Bottom', 'One-piece', 'Shoes'] %}
+        <option value="{{ value }}" {% if selected_item_type == value %}selected{% endif %}>{{ value }}</option>
+        {% endfor %}
+      </select>
+    </label>
+
+    <label>Style
+      <select name="style" required>
+        {% for value in ['Casual', 'Formal', 'Street'] %}
+        <option value="{{ value }}" {% if item and item.style == value %}selected{% endif %}>{{ value }}</option>
+        {% endfor %}
+      </select>
+    </label>
+
+    <label>Color
+      <select name="color_id" required>
+        {% for color in colors %}
+        <option value="{{ color.id }}" {% if item and item.color_id == color.id %}selected{% endif %}>{{ color.label }}</option>
+        {% endfor %}
+      </select>
+    </label>
+
+    <label>Category
+      <select name="category_id" id="category_id" required>
+        {% for category in categories %}
+        <option value="{{ category.id }}" {% if item and item.category_id == category.id %}selected{% endif %}>{{ category.label }}</option>
+        {% endfor %}
+      </select>
+    </label>
+
+    <label>Photo <span class="muted">JPG or PNG, up to 5 MB</span>
+      <input id="photo-input" type="file" name="photo" accept="image/jpeg,image/png" capture="environment">
+    </label>
+
+    {% if item and item.photo %}<p class="muted">Leave the photo field empty to keep the current image.</p>{% endif %}
+    <button>{{ 'Save changes' if item else 'Add item' }}</button>
+  </form>
+</section>
+
+<script>
+const typeSelect = document.getElementById("item_type");
+const categorySelect = document.getElementById("category_id");
+typeSelect.addEventListener("change", async () => {
+  const url = "{{ url_for('catalog.category_options', item_type='TYPE') }}"
+    .replace("TYPE", encodeURIComponent(typeSelect.value));
+  const response = await fetch(url);
+  if (response.ok) categorySelect.innerHTML = await response.text();
+});
+
+const photoInput = document.getElementById("photo-input");
+const photoPreview = document.getElementById("photo-preview");
+const photoEmpty = document.getElementById("photo-empty");
+photoInput.addEventListener("change", () => {
+  const file = photoInput.files[0];
+  if (!file) return;
+  photoPreview.src = URL.createObjectURL(file);
+  photoPreview.hidden = false;
+  photoPreview.classList.remove("is-empty");
+  if (photoEmpty) photoEmpty.hidden = true;
+});
+</script>
+{% endblock %}

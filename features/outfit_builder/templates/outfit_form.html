@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>{{ 'Edit outfit' if outfit else 'Create outfit' }}</h1>
+
+{% for message in errors.values() %}
+<p class="error">{{ message }}</p>
+{% endfor %}
+
+{% set selected_name = request.form.get('name', outfit.name if outfit else '') %}
+{% set selected_type = request.form.get('outfit_type', outfit.outfit_type if outfit else 'Casual') %}
+{% set selected_description = request.form.get('description', outfit.description if outfit else '') %}
+
+<form method="post">
+  <label>Name
+    <input name="name" value="{{ selected_name }}" required>
+  </label>
+
+  <label>Outfit type
+    <select name="outfit_type" required>
+      {% for kind in ['Casual', 'Formal', 'Sport'] %}
+      <option value="{{ kind }}"
+        {% if selected_type == kind %}selected{% endif %}>
+        {{ kind }}
+      </option>
+      {% endfor %}
+    </select>
+  </label>
+
+  <label>Description
+    <textarea name="description">{{ selected_description }}</textarea>
+  </label>
+
+  <p>Choose at least two distinct available items:</p>
+
+  {% for item in wardrobe %}
+  <label>
+    <input type="checkbox"
+           name="item_ids"
+           value="{{ item.id }}"
+           {% if item.id|string in selected_ids %}checked{% endif %}>
+    {{ item.name }} — {{ item.item_type }}, {{ item.color }}, {{ item.category }}
+  </label>
+  {% else %}
+  <p>Add available clothing items to your wardrobe first.</p>
+  {% endfor %}
+
+  <button>Save outfit</button>
+</form>
+{% endblock %}

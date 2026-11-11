@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% block title %}My Wardrobe — Fitora{% endblock %}
+{% block content %}
+<div class="page-heading">
+  <div>
+    <h1>My wardrobe</h1>
+    <p>Your pieces, all in one place.</p>
+  </div>
+  <a class="button" href="{{ url_for('clothing.create') }}">+ Add item</a>
+</div>
+
+<form class="filter-panel filter-grid" method="get">
+  <label>Search
+    <input name="q" value="{{ request.args.get('q', '') }}" placeholder="Find a piece">
+  </label>
+  <label>Type
+    <select name="item_type">
+      <option value="">All types</option>
+      {% for value in ['Top', 'Bottom', 'One-piece', 'Shoes'] %}
+      <option value="{{ value }}" {% if request.args.get('item_type') == value %}selected{% endif %}>{{ value }}</option>
+      {% endfor %}
+    </select>
+  </label>
+  <label>Style
+    <select name="style">
+      <option value="">All styles</option>
+      {% for value in ['Casual', 'Formal', 'Street'] %}
+      <option value="{{ value }}" {% if request.args.get('style') == value %}selected{% endif %}>{{ value }}</option>
+      {% endfor %}
+    </select>
+  </label>
+  <label>Color
+    <select name="color_id">
+      <option value="">All colors</option>
+      {% for color in colors %}
+      <option value="{{ color.id }}" {% if request.args.get('color_id') == color.id|string %}selected{% endif %}>{{ color.label }}</option>
+      {% endfor %}
+    </select>
+  </label>
+  <label>Availability
+    <select name="available">
+      <option value="">All</option>
+      <option value="1" {% if request.args.get('available') == '1' %}selected{% endif %}>Available</option>
+      <option value="0" {% if request.args.get('available') == '0' %}selected{% endif %}>Unavailable</option>
+    </select>
+  </label>
+  <button type="submit">Filter</button>
+</form>
+
+<section class="wardrobe-grid">
+  {% for item in items %}
+  <article class="clothing-card">
+    <a href="{{ url_for('clothing.detail', item_id=item.id) }}" aria-label="View {{ item.name }}">
+      {% if item.photo %}
+      <img class="clothing-photo" src="{{ url_for('clothing.photo', filename=item.photo) }}" alt="{{ item.name }}">
+      {% else %}
+      <div class="photo-placeholder">No photo yet</div>
+      {% endif %}
+      <div class="card-copy">
+        <h2>{{ item.name }}</h2>
+        <p>{{ item.category }} · {{ item.color }}</p>
+        <span class="pill {% if not item.available %}unavailable{% endif %}">
+          {{ 'Available' if item.available else 'Unavailable' }}
+        </span>
+      </div>
+    </a>
+  </article>
+  {% else %}
+  <div class="empty-state">
+    <h2>Your wardrobe is ready for its first piece</h2>
+    <p>Add an item and its photo will show up here.</p>
+    <a class="button" href="{{ url_for('clothing.create') }}">Add your first item</a>
+  </div>
+  {% endfor %}
+</section>
+{% endblock %}

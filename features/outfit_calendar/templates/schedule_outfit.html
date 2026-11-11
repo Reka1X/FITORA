@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>{{ 'Edit' if schedule else 'Schedule' }} outfit</h1>
+
+{% for message in errors.values() %}
+<p class="error">{{ message }}</p>
+{% endfor %}
+
+{% set selected_outfit = request.form.get('outfit_id', schedule.outfit_id if schedule else '') %}
+{% set selected_type = request.form.get('schedule_type', schedule.schedule_type if schedule else 'Casual') %}
+{% set selected_date = request.form.get('planned_date', schedule.planned_date if schedule else '') %}
+{% set selected_note = request.form.get('note', schedule.note if schedule else '') %}
+
+<form method="post">
+  <label>Outfit
+    <select name="outfit_id" required>
+      {% for outfit in outfits %}
+      <option value="{{ outfit.id }}"
+        {% if selected_outfit|string == outfit.id|string %}selected{% endif %}>
+        {{ outfit.name }} ({{ outfit.outfit_type }})
+      </option>
+      {% endfor %}
+    </select>
+  </label>
+
+  <label>Schedule type
+    <select name="schedule_type" required>
+      {% for kind in schedule_types %}
+      <option value="{{ kind }}" {% if selected_type == kind %}selected{% endif %}>
+        {{ kind }}
+      </option>
+      {% endfor %}
+    </select>
+  </label>
+
+  <label>Date
+    <input type="date" name="planned_date" value="{{ selected_date }}" required>
+  </label>
+
+  <label>Note
+    <textarea name="note">{{ selected_note }}</textarea>
+  </label>
+
+  <button>Save schedule</button>
+</form>
+{% endblock %}

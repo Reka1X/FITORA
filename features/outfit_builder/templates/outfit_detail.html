@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>{{ outfit.name }}</h1>
+<p>{{ outfit.outfit_type }}</p>
+<p>{{ outfit.description }}</p>
+<p>Compatibility score: {{ compatibility_score }}/100</p>
+
+<h2>Saved items</h2>
+<ul>
+  {% for item in items %}
+  <li>
+    {{ item.item_name }} — {{ item.item_type }},
+    {{ item.style }}, {{ item.color }}, {{ item.category }}
+  </li>
+  {% else %}
+  <li>No saved item snapshots.</li>
+  {% endfor %}
+</ul>
+
+<p>
+  <a href="{{ url_for('outfit.edit', outfit_id=outfit.id) }}">Edit outfit</a>
+</p>
+
+<form method="post"
+      action="{{ url_for('outfit.delete', outfit_id=outfit.id) }}">
+  <button>Delete outfit</button>
+</form>
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard — Fitora{% endblock %}
+
+{% block content %}
+<h1>Dashboard</h1>
+
+<h2>Your summary</h2>
+<ul>
+  {% for label, count in counts.items() %}
+  <li>{{ label }}: {{ count }}</li>
+  {% endfor %}
+</ul>
+
+<h2>Upcoming outfits</h2>
+<ul>
+  {% for item in upcoming %}
+  <li>{{ item.planned_date }} — {{ item.name }}</li>
+  {% else %}
+  <li>No upcoming outfits scheduled.</li>
+  {% endfor %}
+</ul>
+{% endblock %}

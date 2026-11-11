@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Create account</h1>
+{% for error in errors.values() %}<p class="error">{{ error }}</p>{% endfor %}
+<form method="post">
+  <label>Full name<input name="full_name" required></label>
+  <label>Email<input type="email" name="email" required></label>
+  <label>Password<input type="password" name="password" minlength="8" required></label>
+  <label>Confirm password<input type="password" name="confirm_password" required></label>
+  <button>Register</button>
+</form>
+{% endblock %}

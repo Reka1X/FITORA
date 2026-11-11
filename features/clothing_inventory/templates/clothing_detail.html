@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block title %}{{ item.name }} — Fitora{% endblock %}
+{% block content %}
+<p><a href="{{ url_for('clothing.index') }}">← Back to wardrobe</a></p>
+<section class="detail-layout">
+  <div>
+    {% if item.photo %}
+    <img class="detail-photo" src="{{ url_for('clothing.photo', filename=item.photo) }}" alt="Photo of {{ item.name }}">
+    {% else %}
+    <div class="detail-photo-placeholder">No photo for this item yet</div>
+    {% endif %}
+  </div>
+  <div class="detail-panel">
+    <div class="page-heading">
+      <div>
+        <h1>{{ item.name }}</h1>
+        <p>Wardrobe piece</p>
+      </div>
+      <span class="pill {% if not item.available %}unavailable{% endif %}">
+        {{ 'Available' if item.available else 'Unavailable' }}
+      </span>
+    </div>
+
+    <div class="detail-meta">
+      <div class="meta-item"><small>Type</small>{{ item.item_type }}</div>
+      <div class="meta-item"><small>Style</small>{{ item.style }}</div>
+      <div class="meta-item"><small>Color</small>{{ item.color }}</div>
+      <div class="meta-item"><small>Category</small>{{ item.category }}</div>
+    </div>
+
+    <form method="post" action="{{ url_for('clothing.availability', item_id=item.id) }}">
+      <label>Availability
+        <select name="available">
+          <option value="1" {% if item.available %}selected{% endif %}>Available</option>
+          <option value="0" {% if not item.available %}selected{% endif %}>Unavailable</option>
+        </select>
+      </label>
+      <button>Update availability</button>
+    </form>
+
+    <div class="actions">
+      <a class="button secondary" href="{{ url_for('clothing.edit', item_id=item.id) }}">Edit item</a>
+      <form method="post" action="{{ url_for('clothing.delete', item_id=item.id) }}">
+        <button class="danger">Delete item</button>
+      </form>
+    </div>
+  </div>
+</section>
+{% endblock %}
